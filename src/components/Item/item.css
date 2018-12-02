@@ -1,0 +1,12 @@
+.price {
+    font-size: 24px;
+    font-weight: 700;
+    color: #372f2b;
+    line-height: 26px;
+}
+
+.product-item {
+    width: 200px;
+    display: inline-block;
+    margin: 20px;
+}
