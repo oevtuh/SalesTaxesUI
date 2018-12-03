@@ -8,30 +8,18 @@ import ProductList from '../../components/ProductList';
 
 export class Home extends React.Component {
   componentWillMount() {
-    console.log('home will mount');
     this.props.fetchProducts();
   }
 
-  componentDidMount() {
-    console.log('home did mount');
-  }
-
   shouldComponentUpdate() {
-    console.log('should update', this.props.products);
     return !this.props.products.length;
   }
 
   addToCart(product) {
-    console.log('add to cart');
     this.props.addProductToCart(product);
-
-    localStorage.setItem('cart', JSON.stringify({
-      products: this.props.cart
-    }));
   }
 
   render() {
-    console.log('home render', this.state);
     return (
       <ProductList list={this.props.products} addToCart={e => this.addToCart(e)}></ProductList>
     );

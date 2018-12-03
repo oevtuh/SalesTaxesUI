@@ -1,8 +1,8 @@
-import {takeLatest, all, call, put, select} from 'redux-saga/effects';
-import {GET_CART, cartResult} from './actions';
+import {takeLatest, all, call, put} from 'redux-saga/effects';
+import {GET_CART, cartResult, CLEAR_CART} from './actions';
 import api from '../../api';
 
-export function* fetchCartData(products = []) {
+export function* fetchCartData() {
   const defaultCart = {
     total: 0,
     taxes: 0,
@@ -15,8 +15,9 @@ export function* fetchCartData(products = []) {
       fn: localStorage.getItem
     }, 'cart');
 
-    // console.log('local cart', products);
-    const res = yield call(api.cart, JSON.parse(cart).products);
+    const products = (JSON.parse(cart) || {}).products || [];
+
+    const res = yield call(api.cart, products);
 
     if (res.ok) {
       yield put(cartResult(res.data.content.cart))
@@ -29,7 +30,13 @@ export function* fetchCartData(products = []) {
   }
 }
 
-export default function* defaultSaga(products) {
-  console.log('defaultSaga', products);
-  yield all([yield takeLatest(GET_CART, fetchCartData.bind(null, products))]);
+export function* clearCartSaga() {
+  yield localStorage.clear();
+}
+
+export default function* defaultSaga() {
+  yield all([
+    yield takeLatest(GET_CART, fetchCartData),
+    yield takeLatest(CLEAR_CART, clearCartSaga)
+  ]);
 }

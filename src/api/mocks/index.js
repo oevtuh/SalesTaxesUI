@@ -1,5 +1,5 @@
-import productsResponse from './products.json'
 import cartResponse from './cart.json'
+import productsResponse from './products';
 
 const response = (data, success = true) => ({
   ok: success,
@@ -7,9 +7,7 @@ const response = (data, success = true) => ({
 });
 
 export const products = () => response(productsResponse);
-export const cart = (data, gg) => {
-  console.log('cart saga', data);
-
-  const products = productsResponse.content.products.filter(product => data.includes(product.id));
-  return response(Object.assign({}, cartResponse, {content: {cart: {products}}}));
+export const cart = (data) => {
+  cartResponse.content.cart.products = productsResponse.content.products.filter(product => data.some(p => p.id === product.id));
+  return response(cartResponse);
 };

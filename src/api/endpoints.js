@@ -7,3 +7,5 @@ export const api = apisauce.create({
 
 
 export const products = () => api.get('/product');
+
+export const cart = products => api.post('/basket', {products});

@@ -4,8 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import configureStore from './configureStore';
-import {Provider} from 'react-redux'
-import {ConnectedRouter} from 'react-router-redux';
+import {Provider} from 'react-redux';
 import createHistory from 'history/createBrowserHistory';
 
 const initialState = {};

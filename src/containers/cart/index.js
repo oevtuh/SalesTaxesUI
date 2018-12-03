@@ -6,17 +6,21 @@ import injectSaga from '../../utils/injectSaga';
 import Table from 'react-bootstrap/lib/Table';
 import ListGroup from 'react-bootstrap/lib/ListGroup';
 import ListGroupItem from 'react-bootstrap/lib/ListGroupItem';
-import {fetchCart} from './actions';
+import ButtonToolbar from 'react-bootstrap/lib/ButtonToolbar';
+import Button from 'react-bootstrap/lib/Button';
+import {fetchCart, clearCart} from './actions';
 
 export class Cart extends React.Component {
   componentWillMount() {
-    console.log('home will mount');
-    this.props.fetchCart([1, 3]);
-
+    this.props.fetchCart();
   }
 
-  componentDidMount() {
-    console.log('cart did mount', this.props);
+  onClearClick() {
+    this.props.clearCart();
+  }
+
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return true;
   }
 
   list() {
@@ -24,7 +28,8 @@ export class Cart extends React.Component {
         <tr key={i}>
           <td>{i + 1}</td>
           <td>{product.name}</td>
-          <td>{product.price}</td>
+          <td>{product.quantity}</td>
+          <td>${product.amount}</td>
         </tr>
       ));
   }
@@ -32,11 +37,15 @@ export class Cart extends React.Component {
   render() {
     return (
       <div className="container">
+        <ButtonToolbar>
+          <Button bsStyle="danger" onClick={() => this.onClearClick()}>Clear cart</Button>
+        </ButtonToolbar>
         <Table striped bordered condensed hover>
           <thead>
           <tr>
             <th>#</th>
             <th>Name</th>
+            <th>Quantity</th>
             <th>Price</th>
           </tr>
           </thead>
@@ -45,8 +54,8 @@ export class Cart extends React.Component {
           </tbody>
         </Table>
         <ListGroup>
-          <ListGroupItem header="Total">${this.props.cart.total}</ListGroupItem>
-          <ListGroupItem header="Taxes">${this.props.cart.taxes}</ListGroupItem>
+          <ListGroupItem header="Total">${this.props.cart.total || 0}</ListGroupItem>
+          <ListGroupItem header="Taxes">${this.props.cart.taxes || 0}</ListGroupItem>
         </ListGroup>
       </div>
     );
@@ -54,14 +63,13 @@ export class Cart extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  cart: state.cart.cart
+  cart: state.cart.cart,
+  clearCart: state.cart.clearCart
 });
 
 const mapDispatchToProps = dispatch => ({
-  fetchCart: data => {
-    console.log('fetchCart', data);
-    return dispatch(fetchCart(data))
-  }
+  fetchCart: data => dispatch(fetchCart(data)),
+  clearCart: () => dispatch(clearCart())
 });
 
 const withConnect = connect(
